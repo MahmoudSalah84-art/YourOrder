@@ -24,5 +24,6 @@ namespace yourOrder.Infrastructure.Data
         public DbSet<ProductType> ProductTypes { get; set; }
 
 
+
     }
 }
