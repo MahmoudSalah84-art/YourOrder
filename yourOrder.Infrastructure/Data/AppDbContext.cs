@@ -9,7 +9,7 @@ using yourOrder.Core.Entity;
 
 namespace yourOrder.Infrastructure.Data
 {
-    internal class AppDbContext(DbContextOptions<AppDbContext> options) :DbContext(options)
+    public class AppDbContext(DbContextOptions<AppDbContext> options) :DbContext(options)
     {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
