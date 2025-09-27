@@ -19,4 +19,17 @@
     <ProjectReference Include="..\yourOrder.core\yourOrder.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\SeedData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\SeedData\Products.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\SeedData\types.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
