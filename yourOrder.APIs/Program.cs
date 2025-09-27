@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using System;
+using yourOrder.APIs.Helpers;
 using yourOrder.Core.Interfaces;
 using yourOrder.Infrastructure.Data;
 using yourOrder.Infrastructure.Repositories;
@@ -28,7 +29,8 @@ namespace yourOrder.APIs
             // Add Generic Repository
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-
+            // Add AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 
 
