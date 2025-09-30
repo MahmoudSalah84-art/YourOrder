@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using yourOrder.Core.Entity;
+
+namespace yourOrder.Core.Specifications
+{
+    public class ProductWithBrandAndTypeSpecification : BaseSpecifications<Product>
+    {
+        public ProductWithBrandAndTypeSpecification(ProductParams productParams)
+               : base(p => (string.IsNullOrEmpty(productParams.Search) || (p.Name.ToLower().Contains(productParams.Search!.ToLower()))) &&
+                          (!productParams.BrandId.HasValue || p.ProductBrandId == productParams.BrandId) &&
+                          (!productParams.TypeId.HasValue || p.ProductTypeId == productParams.TypeId)
+               )
+        {
+            Includes.Add(p => p.productBrand);
+            Includes.Add(p => p.productType);
+            AddOrderBy(p => p.Name);
+
+            ApplyPagination(productParams.PageSize * (productParams.PageIndex - 1), productParams.PageSize);
+
+            if (!string.IsNullOrEmpty(productParams.Sort))
+            {
+                switch (productParams.Sort)
+                {
+                    case "PriceAsc":
+                        AddOrderBy(p => p.Price);
+                        break;
+                    case "PriceDesc":
+                        AddOrderByDescending(p => p.Price);
+                        break;
+                    default:
+                        AddOrderBy(p => p.Name);
+                        break;
+                }
+            }
+        }
+
+        // get specified product
+        public ProductWithBrandAndTypeSpecification(int id) : base(p => p.Id == id)
+        {
+            Includes.Add(p => p.productBrand);
+            Includes.Add(p => p.productType);
+        }
+
+
+
+    }
+}
