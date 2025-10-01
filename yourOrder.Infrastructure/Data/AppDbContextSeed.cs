@@ -17,8 +17,9 @@ namespace yourOrder.Infrastructure.Data
             {
                 if (!context.ProductBrands.Any())
                 {
-                    var BrandsData = File.ReadAllText("../yourOrder.Infrastructure/Data/DataSeed/brands.json");
+                    var BrandsData = File.ReadAllText("../yourOrder.Infrastructure/Data/SeedData/brands.json");
                     var brands = JsonSerializer.Deserialize<List<ProductBrand>>(BrandsData);
+
                     foreach (var brand in brands)
                     {
                         await context.Set<ProductBrand>().AddAsync(brand);
@@ -28,7 +29,7 @@ namespace yourOrder.Infrastructure.Data
 
                 if (!context.ProductTypes.Any())
                 {
-                    var TypesData = File.ReadAllText("../yourOrder.Infrastructure/Data/DataSeed/types.json");
+                    var TypesData = File.ReadAllText("../yourOrder.Infrastructure/Data/SeedData/types.json");
                     var types = JsonSerializer.Deserialize<List<ProductType>>(TypesData);
                     foreach (var type in types)
                     {
@@ -39,7 +40,7 @@ namespace yourOrder.Infrastructure.Data
 
                 if (!context.Products.Any())
                 {
-                    var ProductsData = File.ReadAllText("../yourOrder.Infrastructure/Data/DataSeed/products.json");
+                    var ProductsData = File.ReadAllText("../yourOrder.Infrastructure/Data/SeedData/products.json");
                     var products = JsonSerializer.Deserialize<List<Product>>(ProductsData);
                     foreach (var product in products)
                     {

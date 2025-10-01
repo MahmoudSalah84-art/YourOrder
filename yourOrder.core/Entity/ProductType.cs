@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace yourOrder.Core.Entity
 {
-    public class ProductType(string name,int id): BaseEntity(id) //primary constractor in .net 9
+    public class ProductType: BaseEntity
     {
-        public required string Name { get; set; } = name ;
+        public  string Name { get; set; } 
     }
 }

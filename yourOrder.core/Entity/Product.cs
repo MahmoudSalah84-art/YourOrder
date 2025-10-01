@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace yourOrder.Core.Entity
 {
-    public class Product(int id): BaseEntity(id)
+    public class Product: BaseEntity
     {
-        public required string Name { get; set; }
-        public required string Description { get; set; }
-        public required decimal Price { get; set; }
-        public required string PictureUrl { get; set; }
+        public  string Name { get; set; }
+        public  string Description { get; set; }
+        public  decimal Price { get; set; }
+        public  string PictureUrl { get; set; }
 
-        public required ProductBrand productBrand { get; set; }
-        public required int ProductBrandId { get; set; }
-        public required ProductType productType { get; set; }
-        public required int ProductTypeId { get; set; }
+        public  ProductBrand productBrand { get; set; }
+        public  int ProductBrandId { get; set; }
+        public  ProductType productType { get; set; }
+        public  int ProductTypeId { get; set; }
 
     }
 }

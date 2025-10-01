@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace yourOrder.Core.Entity
 {
-    public class BaseEntity(int id)
+    public class BaseEntity
     {
-        public required int Id { get; set; } = id;
+        public  int Id { get; set; } 
     }
 }
