@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using yourOrder.APIs.Helpers;
+using yourOrder.APIs.Middleware;
 using yourOrder.Core.Interfaces;
 using yourOrder.Infrastructure.Data;
 using yourOrder.Infrastructure.Repositories;
@@ -42,17 +43,23 @@ namespace yourOrder.APIs
 
 
             var app = builder.Build();
-
             // Configure the HTTP request pipeline.
 
-              
+
+            
+
+
+
+            
+
+
             // --- بداية الإضافة (Seeding Data) ---
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>(); // Get logger factory for logging
             try
             {
-                var context = services.GetRequiredService<AppDbContext>();
+                var context = services.GetRequiredService<AppDbContext>(); //create instance from appdbcontext and add required for throw exeption if null not just null (connect to database)
                 await context.Database.MigrateAsync(); // Apply pending migrations
                 await AppDbContextSeed.SeedAsync(context, loggerFactory); // Seed the data
             }
@@ -62,12 +69,16 @@ namespace yourOrder.APIs
                 logger.LogError(ex, "An error occurred during migration");
             }
             // --- نهاية الإضافة ---
-
-
+            
+            
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.MapOpenApi(); 
             }
+            app.UseMiddleware<ExceptionMiddleware>(); // catch exceptions globally
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");// redirect to errors controller
+
+
 
             app.UseHttpsRedirection();
 

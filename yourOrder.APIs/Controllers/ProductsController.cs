@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using yourOrder.APIs.DTOs;
+using yourOrder.APIs.Errors;
 using yourOrder.Core.Entity;
 using yourOrder.Core.Interfaces;
 using yourOrder.Core.Specifications;
@@ -38,7 +39,11 @@ namespace yourOrder.APIs.Controllers
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
             var product = await _productRepo.GetByIdWithSpec(spec); // Use the new method
-            
+            if (product == null)
+            {
+                // If not found, return our custom 404 response
+                return NotFound(new ApiResponse(404));
+            }
             var data = _mapper.Map<Product,ProductToReturnDto>(product);
             return Ok(data);
         }
