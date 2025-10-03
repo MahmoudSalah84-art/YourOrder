@@ -10,7 +10,7 @@ namespace yourOrder.Core.Specifications
     public class ProductWithBrandAndTypeSpecification : BaseSpecifications<Product>
     {
         public ProductWithBrandAndTypeSpecification(ProductParams productParams)
-               : base(p => (string.IsNullOrEmpty(productParams.Search) || (p.Name.ToLower().Contains(productParams.Search!.ToLower()))) &&
+               : base(p => (string.IsNullOrEmpty(productParams.Search) || (p.Name.ToLower().Contains(productParams.Search))) &&
                           (!productParams.BrandId.HasValue || p.ProductBrandId == productParams.BrandId) &&
                           (!productParams.TypeId.HasValue || p.ProductTypeId == productParams.TypeId)
                )
@@ -25,10 +25,10 @@ namespace yourOrder.Core.Specifications
             {
                 switch (productParams.Sort)
                 {
-                    case "PriceAsc":
+                    case "priceAsc":
                         AddOrderBy(p => p.Price);
                         break;
-                    case "PriceDesc":
+                    case "priceDesc":
                         AddOrderByDescending(p => p.Price);
                         break;
                     default:

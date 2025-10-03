@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using yourOrder.APIs.DTOs;
 using yourOrder.APIs.Errors;
+using yourOrder.APIs.Helpers;
 using yourOrder.Core.Entity;
 using yourOrder.Core.Interfaces;
 using yourOrder.Core.Specifications;
@@ -14,31 +16,32 @@ namespace yourOrder.APIs.Controllers
     {
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IMapper _mapper; // Inject IMapper
+        public ProductsController(IGenericRepository<Product> productRepo, IMapper mapper) => (_productRepo,_mapper) = (productRepo,mapper);
 
-        public ProductsController(IGenericRepository<Product> productRepo, IMapper mapper)
-        {
-            _productRepo = productRepo;
-            _mapper = mapper;
-        }
 
         [HttpGet] // GET: api/products
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams productParams)
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams productParams)
         {
-            var spec = new ProductWithBrandAndTypeSpecification(productParams); // Create specification instance
-
-            var products = await _productRepo.GetAllWithSpec(spec); // Use the new method
-
+            // Spec for getting the count
+            var countSpec = new ProductWithFilterForCountSpecification(productParams);
+            var totalItems = await _productRepo.GetCountAsync(countSpec);
+            // Spec for getting the products with pagination
+            var spec = new ProductWithBrandAndTypeSpecification(productParams); 
+            var products = await _productRepo.GetAllWithSpec(spec); 
+            // Map products to ProductToReturnDto
             var data = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products); // Map to DTOs
 
-            return Ok(data);
+            var pagination = new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize, totalItems, data);
+            return Ok( pagination);
 
         }
+
 
         [HttpGet("{id}")] // GET: api/products/1
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
-            var product = await _productRepo.GetByIdWithSpec(spec); // Use the new method
+            var product = await _productRepo.GetByIdWithSpec(spec); 
             if (product == null)
             {
                 // If not found, return our custom 404 response
@@ -47,10 +50,17 @@ namespace yourOrder.APIs.Controllers
             var data = _mapper.Map<Product,ProductToReturnDto>(product);
             return Ok(data);
         }
-        
 
-        
+
+
+
+
+       
+
 
 
     }
 }
+
+
+

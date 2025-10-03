@@ -15,8 +15,8 @@ namespace yourOrder.Core.Specifications
 
         public int PageSize
         {
-            get { return pageSize; }
-            set { pageSize = value > MaxPageSize ? MaxPageSize : value; }
+            get => pageSize; 
+            set => pageSize = (value > MaxPageSize) ? MaxPageSize : value; 
         }
 
         public string? Sort { get; set; }
@@ -27,8 +27,10 @@ namespace yourOrder.Core.Specifications
 
         public string? Search
         {
-            get { return search; }
-            set { search = value.ToLower(); }
+            get =>  search; 
+            set => search = value?.ToLower(); 
         }
     }
 }
+
+

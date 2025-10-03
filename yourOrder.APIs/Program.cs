@@ -53,7 +53,7 @@ namespace yourOrder.APIs
             
 
 
-            // --- بداية الإضافة (Seeding Data) ---
+            //Seeding Data
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var loggerFactory = services.GetRequiredService<ILoggerFactory>(); // Get logger factory for logging
@@ -67,10 +67,11 @@ namespace yourOrder.APIs
             {
                 var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "An error occurred during migration");
+
             }
-            // --- نهاية الإضافة ---
-            
-            
+            // End Seeding Data
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi(); 

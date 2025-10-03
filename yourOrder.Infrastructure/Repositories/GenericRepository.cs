@@ -43,11 +43,7 @@ namespace yourOrder.Infrastructure.Repositories
         {
             return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }
-
         #endregion
-
-
-
 
 
         public IQueryable<T> ApplySpecifications(ISpecification<T> spec)
@@ -57,11 +53,8 @@ namespace yourOrder.Infrastructure.Repositories
 
 
 
+        public async Task<int> GetCountAsync(ISpecification<T> spec)=> await ApplySpecifications(spec).CountAsync();
 
-
-
-        public async Task<int> GetCountAsync(ISpecification<T> spec)
-           => await ApplySpecifications(spec).CountAsync();
         public Task Add(T entity)
         {
             throw new NotImplementedException();
