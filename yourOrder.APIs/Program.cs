@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using System;
 using yourOrder.APIs.Helpers;
 using yourOrder.APIs.Middleware;
@@ -24,8 +25,17 @@ namespace yourOrder.APIs
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-
             });
+            // Add Redis Connection
+            builder.Services.AddSingleton<IConnectionMultiplexer>(c => 
+            {
+                var connection = builder.Configuration.GetConnectionString("RedisConnection");
+                return ConnectionMultiplexer.Connect(connection);
+            });
+
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+            // ...
+
 
             // Add Generic Repository
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
@@ -33,8 +43,7 @@ namespace yourOrder.APIs
             // Add AutoMapper
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
-
-
+            
 
 
 
@@ -44,10 +53,6 @@ namespace yourOrder.APIs
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
-
-
-            
-
 
 
             
