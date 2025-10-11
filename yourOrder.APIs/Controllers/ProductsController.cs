@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using yourOrder.APIs.DTOs;
 using yourOrder.APIs.Errors;
@@ -12,10 +13,11 @@ namespace yourOrder.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IGenericRepository<Product> _productRepo;
-        private readonly IMapper _mapper; // Inject IMapper
+        private readonly IMapper _mapper;
         public ProductsController(IGenericRepository<Product> productRepo, IMapper mapper) => (_productRepo,_mapper) = (productRepo,mapper);
 
 

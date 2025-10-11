@@ -27,7 +27,7 @@ namespace yourOrder.APIs.Middleware
                 _logger.LogError(ex, ex.Message); // Log the exception
 
                 // Format the response
-                context.Response.ContentType = "application/json";
+                context.Response.ContentType = "application/json"; // Set content type to JSON
                 context.Response.StatusCode = 500;
 
                 var response = _env.IsDevelopment()
@@ -35,9 +35,8 @@ namespace yourOrder.APIs.Middleware
                     : new ApiExceptionResponse(500);
 
                 var json = JsonSerializer.Serialize(response);
-                await context.Response.WriteAsync(json);
+                await context.Response.WriteAsync(json); // Write the JSON response
             }
         }
-
     }
 }
