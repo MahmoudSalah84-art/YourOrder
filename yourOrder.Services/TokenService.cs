@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using yourOrder.Core.Entity.Identity;
@@ -26,7 +28,6 @@ namespace yourOrder.Services
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.GivenName ,user.DisplayName)
-
             };
 
             authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role , role)));
@@ -48,5 +49,17 @@ namespace yourOrder.Services
             return new JwtSecurityTokenHandler().WriteToken(token); // xxxxx.yyyyy.zzzzz
 
         }
+        public RefreshToken GenerateRefreshToken()
+        {
+            var randomBytes = RandomNumberGenerator.GetBytes(64);
+            var randomString =  Convert.ToBase64String(randomBytes);
+            return new RefreshToken
+            {
+                Token = randomString,
+                ExpiresOn = DateTime.UtcNow.AddDays(7),
+                CreatedOn = DateTime.UtcNow,
+                //CreatedByIp = HttpContext.Connection.RemoteIpAddress?.ToString()
+            };
+        }        
     }
 }

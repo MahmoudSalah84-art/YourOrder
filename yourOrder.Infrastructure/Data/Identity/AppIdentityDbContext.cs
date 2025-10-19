@@ -11,6 +11,7 @@ namespace yourOrder.Infrastructure.Data.Identity
 {
     public class AppIdentityDbContext :IdentityDbContext<AppUser>
     {
+        public DbSet<AuditLog> AuditLogs { get; set; }
         public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options) { }
     }
 }

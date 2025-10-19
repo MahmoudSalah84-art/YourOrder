@@ -12,7 +12,7 @@ using yourOrder.Infrastructure.Data.Identity;
 namespace yourOrder.Infrastructure.Data.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20251009185932_IdentityInitial")]
+    [Migration("20251014180426_IdentityInitial")]
     partial class IdentityInitial
     {
         /// <inheritdoc />
@@ -184,7 +184,8 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Address");
                 });
@@ -215,6 +216,9 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -320,8 +324,8 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
             modelBuilder.Entity("yourOrder.Core.Entity.Identity.Address", b =>
                 {
                     b.HasOne("yourOrder.Core.Entity.Identity.AppUser", "User")
-                        .WithMany("Addresses")
-                        .HasForeignKey("UserId")
+                        .WithOne("Addresse")
+                        .HasForeignKey("yourOrder.Core.Entity.Identity.Address", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -330,7 +334,8 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
 
             modelBuilder.Entity("yourOrder.Core.Entity.Identity.AppUser", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("Addresse")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

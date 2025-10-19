@@ -11,6 +11,6 @@ namespace yourOrder.Core.Services
     {
 
         string CreateToken(AppUser user, IList<string > roles);
-
+        RefreshToken GenerateRefreshToken();
     }
 }

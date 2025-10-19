@@ -15,7 +15,6 @@ namespace yourOrder.Infrastructure.Data.Identity
         public static async Task SeedUsersAsync(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ILoggerFactory loggerFactory)
         {
             try {
-
                 if (!await userManager.Users.AnyAsync()) //if (!userManager.Users.Any())
                 {
                     // 1. Create roles if they do not exist
@@ -36,15 +35,11 @@ namespace yourOrder.Infrastructure.Data.Identity
                         DisplayName = "mahmoud salah",
                         Email = "mahmoud@gmail.com",
                         UserName = "mahmoud@gmail.com",
-                        Addresses = new List<Address>
+                        Addresse = new Address
                         {
-                            new Address
-                            {
-                                Street = "123 Admin St",
-                                City = "alex",
-                                Country = "egypt",
-                                
-                            }
+                            Street = "123 Admin St",
+                            City = "alex",
+                            Country = "egypt",
                         }
                     };
                     var customerUser = new AppUser
@@ -53,16 +48,12 @@ namespace yourOrder.Infrastructure.Data.Identity
                         SecondName ="salah",
                         DisplayName = "sara salah",
                         Email = "sara@gmail.com",
-                        UserName = "sara@gmail.com",
-                        Addresses = new List<Address>
+                        UserName = "mahmoud@gmail.com",
+                        Addresse = new Address
                         {
-                            new Address
-                            {
-                                Street = "123 Admin St",
-                                City = "Alex",
-                                Country = "egypt",
-                                
-                            }
+                            Street = "123 Admin St",
+                            City = "alex",
+                            Country = "egypt",
                         }
                     };
                     await userManager.CreateAsync(adminUser, "Pa$$w0rd");

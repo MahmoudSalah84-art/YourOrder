@@ -11,8 +11,8 @@ using yourOrder.Infrastructure.Data;
 namespace yourOrder.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250922230651_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251014180520_AppDbInitial")]
+    partial class AppDbInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

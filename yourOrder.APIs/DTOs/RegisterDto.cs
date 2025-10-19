@@ -9,6 +9,8 @@ namespace yourOrder.APIs.DTOs
         [Required]
         public string FirstName { get; set; }
         [Required]
+        public string UserName { get; set; }
+        [Required]
         public string SecondName { get; set; }
         [Required]
         [EmailAddress]
