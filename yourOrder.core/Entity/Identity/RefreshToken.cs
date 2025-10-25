@@ -14,7 +14,6 @@ namespace yourOrder.Core.Entity.Identity
         public DateTime ExpiresOn { get; set; }
         public bool IsExpired { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string CreatedByIp { get; set; }
         public DateTime? RevokedOn { get; set; }
         public string? RevokedByIp { get; set; }
         public string? ReplacedByToken { get; set; }

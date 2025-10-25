@@ -12,7 +12,7 @@ using yourOrder.Infrastructure.Data.Identity;
 namespace yourOrder.Infrastructure.Data.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20251014180426_IdentityInitial")]
+    [Migration("20251024205841_IdentityInitial")]
     partial class IdentityInitial
     {
         /// <inheritdoc />
@@ -270,6 +270,46 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("yourOrder.Core.Entity.Identity.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsExpired")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RevokedByIp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RevokedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -332,10 +372,19 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("yourOrder.Core.Entity.Identity.RefreshToken", b =>
+                {
+                    b.HasOne("yourOrder.Core.Entity.Identity.AppUser", null)
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("yourOrder.Core.Entity.Identity.AppUser", b =>
                 {
                     b.Navigation("Addresse")
                         .IsRequired();
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

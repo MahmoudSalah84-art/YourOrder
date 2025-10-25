@@ -59,7 +59,9 @@ namespace yourOrder.APIs.Controllers
         //}
 
         //more secure
-        [HttpPost("login")]
+
+
+        [HttpPost("login")] 
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -93,6 +95,7 @@ namespace yourOrder.APIs.Controllers
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user, roles),
+                RefreshToken = refreshToken
             };
         }
 
@@ -127,7 +130,7 @@ namespace yourOrder.APIs.Controllers
         [HttpGet("me")] // GET: api/Account/me
         public async Task<IActionResult> Me()
         {
-            var email = User.FindFirstValue(ClaimTypes.Email); 
+            var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return NotFound();
@@ -197,13 +200,11 @@ namespace yourOrder.APIs.Controllers
         public async Task<IActionResult> Refresh(TokenRequestDto model)
         {
             var user = _userManager.Users
-                .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == model.RefreshToken));
-
+                .SingleOrDefault(u => u.RefreshTokens.Any(r => r.Token == model.RefreshToken)); //get user by uniq refresh token
             if (user == null)
                  return Unauthorized("Invalid refresh token");
 
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == model.RefreshToken);
-
+            var refreshToken = user.RefreshTokens.Single(r => r.Token == model.RefreshToken);
             if (!refreshToken.IsActive)
                 return Unauthorized("Inactive refresh token");
 
@@ -213,6 +214,7 @@ namespace yourOrder.APIs.Controllers
 
             refreshToken.RevokedOn = DateTime.UtcNow;
             refreshToken.ReplacedByToken = newRefreshToken.Token;
+
 
             user.RefreshTokens.Add(newRefreshToken);
             await _userManager.UpdateAsync(user);
@@ -231,18 +233,16 @@ namespace yourOrder.APIs.Controllers
             });
         }
 
-
+        
         [HttpPost("revoke")] // POST: api/Account/revoke
         public async Task<IActionResult> Revoke(TokenRequestDto model)
         {
             var user = _userManager.Users
                 .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == model.RefreshToken));
-
             if (user == null)
                 return NotFound("User not found");
 
             var Refreshtoken = user.RefreshTokens.Single(x => x.Token == model.RefreshToken);
-
             if (!Refreshtoken.IsActive)
                 return BadRequest("Token is already inactive");
 
@@ -250,10 +250,8 @@ namespace yourOrder.APIs.Controllers
             Refreshtoken.RevokedByIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
             await _userManager.UpdateAsync(user);
+
             return Ok("Refresh token revoked successfully");
         }
-
-
-
     }
 }

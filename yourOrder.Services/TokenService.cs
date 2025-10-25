@@ -58,7 +58,7 @@ namespace yourOrder.Services
                 Token = randomString,
                 ExpiresOn = DateTime.UtcNow.AddDays(7),
                 CreatedOn = DateTime.UtcNow,
-                //CreatedByIp = HttpContext.Connection.RemoteIpAddress?.ToString()
+                
             };
         }        
     }

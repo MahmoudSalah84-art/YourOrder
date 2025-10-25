@@ -25,11 +25,13 @@ namespace yourOrder.APIs.Controllers
             return (basket is null) ? NotFound(new ApiResponse(404)) : Ok(basket);
         }
         
-        [HttpPost] // Post: api/basket with body
-        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basket)
+        [HttpPost] // Post: api/basket       with body
+        public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basketDto)
         {
-            var mappedBasket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
-            var CreatedOrUpdatedBasket = await _basketRepository.UpdateBasketAsync(mappedBasket);
+            var Basket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basketDto);
+
+            var CreatedOrUpdatedBasket = await _basketRepository.UpdateBasketAsync(Basket);
+
             return (CreatedOrUpdatedBasket is null) ? BadRequest(new ApiResponse(400)) : Ok(CreatedOrUpdatedBasket);//return id or badrequest
         }
         [HttpDelete("{id}")] // Delete: api/basket/basket1

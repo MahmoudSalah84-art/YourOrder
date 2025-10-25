@@ -182,6 +182,31 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsExpired = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RevokedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RevokedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReplacedByToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Address_UserId",
                 table: "Address",
@@ -226,6 +251,11 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshToken_AppUserId",
+                table: "RefreshToken",
+                column: "AppUserId");
         }
 
         /// <inheritdoc />
@@ -248,6 +278,9 @@ namespace yourOrder.Infrastructure.Data.Identity.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "RefreshToken");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

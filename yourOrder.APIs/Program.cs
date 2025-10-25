@@ -45,7 +45,7 @@ namespace yourOrder.APIs
                 .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddDefaultTokenProviders();
             builder.Services.AddAuthorization();
-            builder.Services.AddScoped<AuditService>();
+            
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // how system identify user from token

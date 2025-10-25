@@ -48,7 +48,7 @@ namespace yourOrder.Infrastructure.Data.Identity
                         SecondName ="salah",
                         DisplayName = "sara salah",
                         Email = "sara@gmail.com",
-                        UserName = "mahmoud@gmail.com",
+                        UserName = "sara@gmail.com",
                         Addresse = new Address
                         {
                             Street = "123 Admin St",
