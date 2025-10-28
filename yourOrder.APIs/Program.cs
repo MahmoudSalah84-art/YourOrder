@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System;
 using System.Text;
+using yourOrder.APIs.Extensions;
 using yourOrder.APIs.Helpers;
 using yourOrder.APIs.Middleware;
 using yourOrder.Core.Entity.Identity;
@@ -36,35 +37,10 @@ namespace yourOrder.APIs
                 var connection = builder.Configuration.GetConnectionString("RedisConnection");
                 return ConnectionMultiplexer.Connect(connection);
             });
-            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddAutoMapper(typeof(MappingProfiles));
-            builder.Services.AddScoped<ITokenService, TokenService>();
-            builder.Services.AddScoped<IEmailService, EmailService>();
-            builder.Services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddDefaultTokenProviders();
-            builder.Services.AddAuthorization();
-            
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // how system identify user from token
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // how system deal with user who is unauthorized
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    ClockSkew = TimeSpan.FromMinutes(1),
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-                };
-            });
+
+
+            builder.Services.AddApplicationServices(builder.Configuration);
+            builder.Services.AddIdentityServices(builder.Configuration);
             #endregion
 
             var app = builder.Build();
