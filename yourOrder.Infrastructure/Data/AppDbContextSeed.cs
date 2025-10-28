@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.ProductAggregate;
 
 namespace yourOrder.Infrastructure.Data
 {

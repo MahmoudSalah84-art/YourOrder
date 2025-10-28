@@ -1,4 +1,4 @@
-﻿using yourOrder.APIs.DTOs;
+﻿using yourOrder.APIs.DTOs.ProductDto;
 
 namespace yourOrder.APIs.Helpers
 {

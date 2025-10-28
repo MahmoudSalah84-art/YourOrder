@@ -1,6 +1,6 @@
 ﻿using yourOrder.Core.Entity.Identity;
 
-namespace yourOrder.APIs.DTOs
+namespace yourOrder.APIs.DTOs.Account
 {
     public class UserDto
     {

@@ -1,4 +1,4 @@
-﻿namespace yourOrder.APIs.DTOs.Admin
+﻿namespace yourOrder.APIs.DTOs.Account
 {
     public class UserInfoDto
     {

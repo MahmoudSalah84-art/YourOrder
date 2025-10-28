@@ -1,4 +1,4 @@
-﻿namespace yourOrder.APIs.DTOs
+﻿namespace yourOrder.APIs.DTOs.BasketDto
 {
     public class CustomerBasketDto
     {

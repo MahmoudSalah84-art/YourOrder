@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace yourOrder.Core.Entity
+namespace yourOrder.Core.Entity.BasketAggregate
 {
     public class CustomerBasket
     {

@@ -11,7 +11,7 @@ namespace yourOrder.Core.Entity.Identity
     public class AppUser : IdentityUser
     {
         public string DisplayName { get; set; }
-        public  Address Addresse { get; set; }
+        public  Address Address { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public bool IsDeleted { get; set; }

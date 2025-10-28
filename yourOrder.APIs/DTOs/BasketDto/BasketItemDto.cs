@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-namespace yourOrder.APIs.DTOs
+namespace yourOrder.APIs.DTOs.BasketDto
 {
     public class BasketItemDto
     {

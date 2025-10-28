@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
-using yourOrder.APIs.DTOs;
-using yourOrder.Core.Entity;
+using yourOrder.APIs.DTOs.Account;
+using yourOrder.APIs.DTOs.BasketDto;
+using yourOrder.APIs.DTOs.ProductDto;
+using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Entity.Identity;
+using yourOrder.Core.Entity.OrderAggregate;
+using yourOrder.Core.Entity.ProductAggregate;
 
 namespace yourOrder.APIs.Helpers
 {
@@ -28,7 +32,7 @@ namespace yourOrder.APIs.Helpers
                 }));
 
 
-
+            CreateMap<AddressDto , OrderAddress>();
 
             CreateMap<AppUser, UserDto>();
                 

@@ -13,7 +13,6 @@ namespace yourOrder.Core.Entity.Identity
         public string Country { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
-        [Required]
         public string UserId { get; set; }
         public AppUser User { get; set; }
     }

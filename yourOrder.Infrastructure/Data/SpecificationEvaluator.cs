@@ -28,7 +28,7 @@ namespace yourOrder.Infrastructure.Data
             if (spec.IsPagingEnabled)
                 Query = Query.Skip(spec.Skip).Take(spec.Take);
 
-            Query = spec.Includes.Aggregate(Query, (CurrentQuery, include) => CurrentQuery.Include(include)); //currentQuery is const , there are two include
+            Query = spec.Includes.Aggregate(/*start*/Query, (/*aggregate*/CurrentQuery, /*loop for includes*/include) => CurrentQuery.Include(include)); 
 
             return Query;
         }

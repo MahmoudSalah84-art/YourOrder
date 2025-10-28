@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Interfaces;
 
 namespace yourOrder.Infrastructure.Repositories
