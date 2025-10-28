@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
-using yourOrder.APIs.DTOs;
+using yourOrder.APIs.DTOs.Account;
 using yourOrder.APIs.DTOs.Admin;
+using yourOrder.APIs.Errors;
+using yourOrder.APIs.Extensions;
 using yourOrder.Core.Entity.Identity;
 using yourOrder.Core.Services;
 
@@ -37,28 +39,6 @@ namespace yourOrder.APIs.Controllers
             _config = configuration;
             _mapper = mapper;
         }
-
-        //[HttpPost("login")] 
-        //public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
-        //{
-        //    var user = await _userManager.FindByEmailAsync(loginDto.Email);
-        //    if (user == null)
-        //        return Unauthorized("Invalid email");
-
-        //    var PasswordResult = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-        //    if (!PasswordResult.Succeeded)
-        //        return Unauthorized("Invalid password");
-
-        //    var roles = await _userManager.GetRolesAsync(user); 
-        //    return new UserDto
-        //    {
-        //        DisplayName = user.DisplayName,
-        //        Email = user.Email,
-        //        Token = _tokenService.CreateToken(user , roles)
-        //    };
-        //}
-
-        //more secure
 
 
         [HttpPost("login")] 
@@ -102,8 +82,11 @@ namespace yourOrder.APIs.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register( RegisterDto registerDto)
         {
+            if (CheckEmailExists(registerDto.Email).Result.Value)
+                return BadRequest(new ApiResponse(400,"This Email is already in use.")) ;
+
             var user = _mapper.Map<AppUser>(registerDto);
-            
+
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded)
                 return BadRequest("Error creating user");
@@ -252,6 +235,34 @@ namespace yourOrder.APIs.Controllers
             await _userManager.UpdateAsync(user);
 
             return Ok("Refresh token revoked successfully");
+        }
+
+        [Authorize]
+        [HttpGet("address")]
+        public async Task<ActionResult<AddressDto>> GetUserAddress()
+        {
+            var user = await _userManager.FindWithAddressByEmailAsync(User);
+
+            return Ok(_mapper.Map<Address, AddressDto>(user.Address));
+
+        }
+
+        [Authorize]
+        [HttpPut("address")]
+        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto newAddress)
+        {
+            var user = await _userManager.FindWithAddressByEmailAsync(User);
+
+            user.Address = _mapper.Map<AddressDto, Address>(newAddress);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded) return BadRequest(new ApiResponse(400 , "An Error Occured During Updating User Address"));
+            return Ok(newAddress);
+        }
+
+        [HttpGet("emailexists")]
+        public async Task<ActionResult<bool>> CheckEmailExists([FromQuery] string email)
+        {
+            return await _userManager.FindByEmailAsync(email) != null;
         }
     }
 }

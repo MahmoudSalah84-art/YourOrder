@@ -2,12 +2,12 @@
 using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using yourOrder.APIs.DTOs;
+using yourOrder.APIs.DTOs.ProductDto;
 using yourOrder.APIs.Errors;
 using yourOrder.APIs.Helpers;
-using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.ProductAggregate;
 using yourOrder.Core.Interfaces;
-using yourOrder.Core.Specifications;
+using yourOrder.Core.Specifications.ProductSpecification;
 
 namespace yourOrder.APIs.Controllers
 {
@@ -16,9 +16,10 @@ namespace yourOrder.APIs.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly IGenericRepository<Product> _productRepo;
+        private readonly IUnitOfWork _unitOfWork;
+        
         private readonly IMapper _mapper;
-        public ProductsController(IGenericRepository<Product> productRepo, IMapper mapper) => (_productRepo,_mapper) = (productRepo,mapper);
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper) => (_unitOfWork,_mapper) = (unitOfWork, mapper);
 
 
         [HttpGet] // GET: api/products
@@ -26,10 +27,10 @@ namespace yourOrder.APIs.Controllers
         {
             // Spec for getting the count
             var countSpec = new ProductWithFilterForCountSpecification(productParams);
-            var totalItems = await _productRepo.GetCountAsync(countSpec);
+            var totalItems = await _unitOfWork.Repository<Product>().GetCountAsync(countSpec);
             // Spec for getting the products with pagination
             var spec = new ProductWithBrandAndTypeSpecification(productParams); 
-            var products = await _productRepo.GetAllWithSpec(spec); 
+            var products = await _unitOfWork.Repository<Product>().GetAllWithSpec(spec); 
             // Map products to ProductToReturnDto
             var data = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products); // Map to DTOs
 
@@ -43,7 +44,7 @@ namespace yourOrder.APIs.Controllers
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
-            var product = await _productRepo.GetByIdWithSpec(spec); 
+            var product = await _unitOfWork.Repository<Product>().GetByIdWithSpec(spec); 
             if (product == null)
             {
                 // If not found, return our custom 404 response

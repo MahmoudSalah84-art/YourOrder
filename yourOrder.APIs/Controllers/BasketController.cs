@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using yourOrder.APIs.DTOs;
+using yourOrder.APIs.DTOs.BasketDto;
 using yourOrder.APIs.Errors;
-using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Interfaces;
 
 namespace yourOrder.APIs.Controllers
@@ -13,11 +13,9 @@ namespace yourOrder.APIs.Controllers
     {
         private readonly IBasketRepository _basketRepository;
         private readonly IMapper _mapper;
-        public BasketController(IBasketRepository basketRepository, IMapper mapper)
-        {
-            _basketRepository = basketRepository;
-            _mapper = mapper;
-        }
+        public BasketController(IBasketRepository basketRepository, IMapper mapper) => (_basketRepository , _mapper) = (basketRepository , mapper);
+        
+
         [HttpGet] // Get: api/basket/basket1
         public async Task<ActionResult<CustomerBasket>> GetBasketById(string id)
         {
@@ -25,6 +23,7 @@ namespace yourOrder.APIs.Controllers
             return (basket is null) ? NotFound(new ApiResponse(404)) : Ok(basket);
         }
         
+
         [HttpPost] // Post: api/basket       with body
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDto basketDto)
         {
@@ -34,6 +33,8 @@ namespace yourOrder.APIs.Controllers
 
             return (CreatedOrUpdatedBasket is null) ? BadRequest(new ApiResponse(400)) : Ok(CreatedOrUpdatedBasket);//return id or badrequest
         }
+
+
         [HttpDelete("{id}")] // Delete: api/basket/basket1
         public async Task<ActionResult> DeleteBasket(string id)
         {
