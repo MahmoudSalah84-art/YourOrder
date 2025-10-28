@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace yourOrder.Core.Specifications
+namespace yourOrder.Core.Specifications.ProductSpecification
 {
     public class ProductParams
     {
@@ -26,7 +26,7 @@ namespace yourOrder.Core.Specifications
         public int PageSize
         {
             get => pageSize;
-            set => pageSize = (value > MaxPageSize) ? MaxPageSize : value;
+            set => pageSize = value > MaxPageSize ? MaxPageSize : value;
         }
     }
 }

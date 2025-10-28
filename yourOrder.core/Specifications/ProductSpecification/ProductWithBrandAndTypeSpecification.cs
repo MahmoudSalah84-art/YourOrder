@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.ProductAggregate;
 
-namespace yourOrder.Core.Specifications
+namespace yourOrder.Core.Specifications.ProductSpecification
 {
     public class ProductWithBrandAndTypeSpecification : BaseSpecifications<Product>
     {
         public ProductWithBrandAndTypeSpecification(ProductParams productParams)
-               : base(p => (string.IsNullOrEmpty(productParams.Search) || (p.Name.ToLower().Contains(productParams.Search))) &&
+               : base(p => (string.IsNullOrEmpty(productParams.Search) || p.Name.ToLower().Contains(productParams.Search)) &&
                           (!productParams.BrandId.HasValue || p.ProductBrandId == productParams.BrandId) &&
                           (!productParams.TypeId.HasValue || p.ProductTypeId == productParams.TypeId)
                )

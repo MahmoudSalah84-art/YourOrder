@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using yourOrder.Core.Entity;
+using yourOrder.Core.Entity.ProductAggregate;
 using yourOrder.Core.Interfaces;
 using yourOrder.Infrastructure.Data;
 
