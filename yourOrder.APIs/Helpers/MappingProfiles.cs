@@ -24,7 +24,7 @@ namespace yourOrder.APIs.Helpers
             CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
 
             CreateMap<RegisterDto, AppUser>()
-                .ForMember(d => d.Addresse, o => o.MapFrom(s => new Address
+                .ForMember(d => d.Address, o => o.MapFrom(s => new Address
                 {
                     Country = s.Country,
                     City = s.City,

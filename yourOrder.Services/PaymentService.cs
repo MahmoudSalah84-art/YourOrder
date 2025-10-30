@@ -16,14 +16,14 @@ namespace yourOrder.Services
 {
     public class PaymentService : IPaymentService
     {
-        
-        private readonly IBasketRepository _basketRepository;
+
+        private readonly ICachingService _cachingService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly StripeSettings _stripe;
-        public PaymentService(IOptionsSnapshot<StripeSettings> stripe, IBasketRepository basketRepository, IUnitOfWork unitOfWork)
+        public PaymentService(IOptionsSnapshot<StripeSettings> stripe, ICachingService cachingService, IUnitOfWork unitOfWork)
         {
             _stripe = stripe.Value;
-            _basketRepository = basketRepository;
+            _cachingService = cachingService;
             _unitOfWork = unitOfWork;
         }
 
@@ -31,7 +31,7 @@ namespace yourOrder.Services
         public async Task<CustomerBasket?> CreateOrUpdatePaymentIntent(string basketId)
         {
             StripeConfiguration.ApiKey = _stripe.SecretKey;
-            var basket = await _basketRepository.GetBasketAsync(basketId);
+            var basket = await _cachingService.GetCachedResponseAsync<CustomerBasket>(basketId);
             if (basket == null) return null;
 
             decimal subtotal = basket.Items.Sum(item => item.Price * item.Quantity);
@@ -68,7 +68,7 @@ namespace yourOrder.Services
                 await service.UpdateAsync(basket.PaymentIntentId, options);
             }
 
-            await _basketRepository.UpdateBasketAsync(basket);
+            await _cachingService.SetCacheResponseAsync(basket.Id,basket, TimeSpan.FromSeconds(30));
             return basket;
         }
 

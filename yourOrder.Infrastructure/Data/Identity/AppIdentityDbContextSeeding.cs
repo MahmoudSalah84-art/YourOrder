@@ -35,7 +35,7 @@ namespace yourOrder.Infrastructure.Data.Identity
                         DisplayName = "mahmoud salah",
                         Email = "mahmoud@gmail.com",
                         UserName = "mahmoud@gmail.com",
-                        Addresse = new Address
+                        Address = new Address
                         {
                             Street = "123 Admin St",
                             City = "alex",
@@ -49,7 +49,7 @@ namespace yourOrder.Infrastructure.Data.Identity
                         DisplayName = "sara salah",
                         Email = "sara@gmail.com",
                         UserName = "sara@gmail.com",
-                        Addresse = new Address
+                        Address = new Address
                         {
                             Street = "123 Admin St",
                             City = "alex",

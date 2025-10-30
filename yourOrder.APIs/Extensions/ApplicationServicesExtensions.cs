@@ -19,21 +19,20 @@ namespace yourOrder.APIs.Extensions
         {
             //editing here
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IBasketRepository, BasketRepository>();
+            
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IEmailService, EmailService>();
-
+            services.AddScoped<ICachingService, CachingService>();
 
 
 
 
             //waiting
-            //services.AddScoped<IPaymentService, PaymentService>();
-            //services.AddScoped<IResponseCachService, ResponseCachService>();
+            
             //services.Configure<JWT>(Configuration.GetSection("JWT")); //Add configuration For JWTSetting Class
             //services.Configure<StripeSettings>(Configuration.GetSection("Stripe")); //Add configuration For StripeSetting Class
             //services.Configure<ApiBehaviorOptions>(options =>

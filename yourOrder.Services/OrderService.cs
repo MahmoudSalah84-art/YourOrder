@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Entity.Identity;
 using yourOrder.Core.Entity.OrderAggregate;
 using yourOrder.Core.Entity.ProductAggregate;
@@ -15,16 +16,17 @@ namespace yourOrder.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IBasketRepository _basketRepo;
+        private readonly ICachingService _cachingService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPaymentService _paymentService;
-        public OrderService(IBasketRepository basketRepository, IUnitOfWork unitOfWork , IPaymentService paymentService) => (_basketRepo , _unitOfWork , _paymentService) = (basketRepository , unitOfWork , paymentService);
+        public OrderService(ICachingService cachingService, IUnitOfWork unitOfWork , IPaymentService paymentService) => (_cachingService , _unitOfWork , _paymentService) = (cachingService, unitOfWork , paymentService);
 
         
         public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, OrderAddress shipToAddress)
         {
-            
-            var basket = await _basketRepo.GetBasketAsync(basketId);
+
+            var basket = await _cachingService.GetCachedResponseAsync<CustomerBasket>(basketId);
+
 
             // نتحقق إذا كان هناك طلب تم إنشاؤه بالفعل بنفس نية الدفع
             var spec = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
@@ -56,7 +58,7 @@ namespace yourOrder.Services
 
             var result = await _unitOfWork.CompleteAsync();
 
-            await _basketRepo.DeleteBasketAsync(basketId);
+            await _cachingService.RemoveCacheAsync(basketId);
 
 
             return (result <= 0) ? null : order;

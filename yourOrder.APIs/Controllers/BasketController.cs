@@ -11,16 +11,16 @@ namespace yourOrder.APIs.Controllers
     [Route("api/[controller]")]
     public class BasketController : ControllerBase
     {
-        private readonly IBasketRepository _basketRepository;
+        private readonly ICachingService _cachingService;
         private readonly IMapper _mapper;
-        public BasketController(IBasketRepository basketRepository, IMapper mapper) => (_basketRepository , _mapper) = (basketRepository , mapper);
+        public BasketController(ICachingService cachingService, IMapper mapper) => (_cachingService, _mapper) = (cachingService, mapper);
         
 
         [HttpGet] // Get: api/basket/basket1
         public async Task<ActionResult<CustomerBasket>> GetBasketById(string id)
         {
-            var basket = await _basketRepository.GetBasketAsync(id);
-            return (basket is null) ? NotFound(new ApiResponse(404)) : Ok(basket);
+            var basket = await _cachingService.RemoveCacheAsync(id);
+            return (basket is false) ? NotFound(new ApiResponse(404)) : Ok(basket);
         }
         
 
@@ -29,25 +29,20 @@ namespace yourOrder.APIs.Controllers
         {
             var Basket = _mapper.Map<CustomerBasketDto, CustomerBasket>(basketDto);
 
-            var CreatedOrUpdatedBasket = await _basketRepository.UpdateBasketAsync(Basket);
+            var CreatedOrUpdatedBasket = await _cachingService.SetCacheResponseAsync(Basket.Id, Basket, TimeSpan.FromMinutes(30));
 
-            return (CreatedOrUpdatedBasket is null) ? BadRequest(new ApiResponse(400)) : Ok(CreatedOrUpdatedBasket);//return id or badrequest
+            return (CreatedOrUpdatedBasket is false) ? BadRequest(new ApiResponse(400)) : Ok(CreatedOrUpdatedBasket);//return id or badrequest
         }
 
 
         [HttpDelete("{id}")] // Delete: api/basket/basket1
         public async Task<ActionResult> DeleteBasket(string id)
         {
-            bool result = await _basketRepository.DeleteBasketAsync(id);
+            bool result = await _cachingService.RemoveCacheAsync(id);
             return result is true ? Ok() : BadRequest(new ApiResponse(400));
         }
 
-        // Alternative Delete method without route parameter and returning boolean
-        //[HttpDelete] // Delete: api/basket/basket1
-        //public async Task<ActionResult<bool>> DeleteBasket(string BasketId)
-        //{
-        //    return await _basketRepository.DeleteBasketAsync(BasketId);
-        //}
+        
     }
 }
 
