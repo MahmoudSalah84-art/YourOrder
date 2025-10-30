@@ -38,7 +38,7 @@ namespace yourOrder.APIs
                 return ConnectionMultiplexer.Connect(connection);
             });
 
-
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddIdentityServices(builder.Configuration);
             #endregion

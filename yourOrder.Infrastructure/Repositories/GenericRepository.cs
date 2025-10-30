@@ -39,6 +39,7 @@ namespace yourOrder.Infrastructure.Repositories
             return await ApplySpecifications(spec).ToListAsync();
         }
 
+        //actully it is Get one entity by specification
         public async Task<T> GetByIdWithSpec(ISpecification<T> spec)
         {
             return await ApplySpecifications(spec).FirstOrDefaultAsync();

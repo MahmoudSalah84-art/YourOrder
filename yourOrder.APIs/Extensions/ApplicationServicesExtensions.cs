@@ -24,6 +24,7 @@ namespace yourOrder.APIs.Extensions
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IEmailService, EmailService>();
 
 

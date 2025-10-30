@@ -17,13 +17,22 @@ namespace yourOrder.Services
     {
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
-        public OrderService(IBasketRepository basketRepository, IUnitOfWork unitOfWork) => (_basketRepo , _unitOfWork) = (basketRepository , unitOfWork);
+        private readonly IPaymentService _paymentService;
+        public OrderService(IBasketRepository basketRepository, IUnitOfWork unitOfWork , IPaymentService paymentService) => (_basketRepo , _unitOfWork , _paymentService) = (basketRepository , unitOfWork , paymentService);
 
         
         public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, OrderAddress shipToAddress)
         {
             
             var basket = await _basketRepo.GetBasketAsync(basketId);
+
+            // نتحقق إذا كان هناك طلب تم إنشاؤه بالفعل بنفس نية الدفع
+            var spec = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
+            var existingOrder = await _unitOfWork.Repository<Order>().GetByIdWithSpec(spec);
+
+            if (existingOrder != null)
+                await _unitOfWork.Repository<Order>().Delete(existingOrder.Id);
+
 
             // product == BasketItem
             // 2. Loop over basket items to get product details from SQL DB
