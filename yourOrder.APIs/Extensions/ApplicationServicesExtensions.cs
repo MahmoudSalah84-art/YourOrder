@@ -33,8 +33,8 @@ namespace yourOrder.APIs.Extensions
 
             //waiting
             
-            //services.Configure<JWT>(Configuration.GetSection("JWT")); //Add configuration For JWTSetting Class
-            //services.Configure<StripeSettings>(Configuration.GetSection("Stripe")); //Add configuration For StripeSetting Class
+            
+            
             //services.Configure<ApiBehaviorOptions>(options =>
             //{
             //    options.InvalidModelStateResponseFactory = actionContext =>

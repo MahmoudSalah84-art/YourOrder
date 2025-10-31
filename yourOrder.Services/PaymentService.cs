@@ -78,7 +78,7 @@ namespace yourOrder.Services
         public async Task UpdateOrderStatusOnSuccess(string paymentIntentId)
         {
             var spec = new OrderWithPaymentIntentSpecification(paymentIntentId);
-            var order = await _unitOfWork.Repository<Order>().GetByIdWithSpec(spec);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
             if (order == null) return; // Order not found, log it
 
@@ -91,7 +91,7 @@ namespace yourOrder.Services
         public async Task UpdateOrderStatusOnFailure(string paymentIntentId)
         {
             var spec = new OrderWithPaymentIntentSpecification(paymentIntentId);
-            var order = await _unitOfWork.Repository<Order>().GetByIdWithSpec(spec);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
             if (order == null) return;
 

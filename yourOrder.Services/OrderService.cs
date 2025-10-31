@@ -32,7 +32,7 @@ namespace yourOrder.Services
 
             // نتحقق إذا كان هناك طلب تم إنشاؤه بالفعل بنفس نية الدفع
             var spec = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
-            var existingOrder = await _unitOfWork.Repository<Order>().GetByIdWithSpec(spec);
+            var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
             if (existingOrder != null)
                 await _unitOfWork.Repository<Order>().Delete(existingOrder.Id);
@@ -70,7 +70,7 @@ namespace yourOrder.Services
         public async Task<Order> GetOrderByIdForUser(int orderId, string buyerEmail)
         {
             var spec = new OrdersWithItemsAndDeliveryMethodsSpecification(orderId, buyerEmail);
-            var order = await _unitOfWork.Repository<Order>().GetByIdWithSpec(spec);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
             return order;
         }
 

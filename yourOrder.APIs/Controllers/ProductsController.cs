@@ -17,9 +17,11 @@ namespace yourOrder.APIs.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        
+        private readonly IWebHostEnvironment _env;
+
+
         private readonly IMapper _mapper;
-        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper) => (_unitOfWork,_mapper) = (unitOfWork, mapper);
+        public ProductsController(IUnitOfWork unitOfWork, IMapper mapper , IWebHostEnvironment env) => (_unitOfWork,_mapper , _env) = (unitOfWork, mapper , env);
 
 
         [HttpGet] // GET: api/products
@@ -46,7 +48,7 @@ namespace yourOrder.APIs.Controllers
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);
-            var product = await _unitOfWork.Repository<Product>().GetByIdWithSpec(spec); 
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec); 
             if (product == null)
             {
                 // If not found, return our custom 404 response
@@ -60,10 +62,41 @@ namespace yourOrder.APIs.Controllers
 
 
 
-       
+        [HttpPost("{id}/picture")]
+        [Authorize("admin")]
+        public async Task<ActionResult<ProductToReturnDto>> UploadProductImage(int id, IFormFile file)
+        {
+            var spec = new ProductWithBrandAndTypeSpecification(id);
+            var product = await _unitOfWork.Repository<Product>().GetEntityWithSpec(spec);
+            if (product == null) return NotFound(new ApiResponse(404));
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new ApiResponse(400, "Please select an image file."));
+            }
+
+            var staticFilesPath = _env.WebRootPath;
+            var imagesPath = Path.Combine(staticFilesPath/*wwwroot*/, "images", "products");
+
+            var fileExtension = Path.GetExtension(file.FileName);
+            var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+            var fullFilePath = Path.Combine(imagesPath, uniqueFileName);
 
 
+            using (var stream = new FileStream(fullFilePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
 
+            //save file path in database
+            product.PictureUrl = $"images/products/{uniqueFileName}";
+
+            await _unitOfWork.Repository<Product>().Update(product);
+            await _unitOfWork.CompleteAsync();
+
+            var data = _mapper.Map<Product, ProductToReturnDto>(product);
+            return Ok(data);
+        }
     }
 }
 

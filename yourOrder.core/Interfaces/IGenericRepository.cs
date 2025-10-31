@@ -19,7 +19,7 @@ namespace yourOrder.Core.Interfaces
 
         #region With Specifications
         Task<IEnumerable<T>> GetAllWithSpec(ISpecification<T> spec);
-        Task<T> GetByIdWithSpec(ISpecification<T> spec);
+        Task<T> GetEntityWithSpec(ISpecification<T> spec);
         #endregion
 
 

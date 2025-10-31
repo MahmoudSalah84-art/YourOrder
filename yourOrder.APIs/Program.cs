@@ -24,6 +24,7 @@ namespace yourOrder.APIs
         public static async Task Main(string[] args)
         {
             #region Create a builder and configure services
+
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddControllers();
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -66,7 +67,8 @@ namespace yourOrder.APIs
             }
             // End Seeding Data
             app.UseMiddleware<ExceptionMiddleware>(); // for only exceptions 500
-            app.UseStatusCodePagesWithReExecute("/errors/{0}");// for other status code like 404
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");// for other status code like 404,...
+            app.UseStaticFiles(); //for images
             app.UseHttpsRedirection();
             app.UseRouting(); 
             app.UseAuthentication();
