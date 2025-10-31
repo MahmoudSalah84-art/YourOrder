@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Entity.Identity;
@@ -25,7 +26,8 @@ namespace yourOrder.Services
         public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliveryMethodId, OrderAddress shipToAddress)
         {
 
-            var basket = await _cachingService.GetCachedResponseAsync<CustomerBasket>(basketId);
+            var Jsonbasket = await _cachingService.GetCachedResponseAsync(basketId);
+            var basket =JsonSerializer.Deserialize<CustomerBasket>(Jsonbasket!);
 
 
             // نتحقق إذا كان هناك طلب تم إنشاؤه بالفعل بنفس نية الدفع

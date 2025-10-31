@@ -5,6 +5,7 @@ using System.Security.Claims;
 using yourOrder.APIs.DTOs.Account;
 using yourOrder.APIs.DTOs.OrderAggregateDto;
 using yourOrder.APIs.Errors;
+using yourOrder.APIs.Helpers;
 using yourOrder.Core.Entity.OrderAggregate;
 using yourOrder.Core.Services;
 using yourOrder.Services;
@@ -32,6 +33,7 @@ namespace yourOrder.APIs.Controllers
         }
 
         [HttpGet("userOrders")]
+        [Cached(600)]
         public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUser()
         {
             var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
@@ -44,6 +46,7 @@ namespace yourOrder.APIs.Controllers
         }
 
         [HttpGet("userOrders/{id}")]
+        [Cached(600)]
         public async Task<ActionResult<OrderToReturnDto>> GetOrderForUser(int id)
         {
             var buyerEmail = User.FindFirstValue(ClaimTypes.Email);

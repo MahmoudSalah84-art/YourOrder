@@ -23,6 +23,7 @@ namespace yourOrder.APIs.Controllers
 
 
         [HttpGet] // GET: api/products
+        [Cached(600)]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery] ProductParams productParams)
         {
             // Spec for getting the count
@@ -41,6 +42,7 @@ namespace yourOrder.APIs.Controllers
 
 
         [HttpGet("{id}")] // GET: api/products/1
+        [Cached(600)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductWithBrandAndTypeSpecification(id);

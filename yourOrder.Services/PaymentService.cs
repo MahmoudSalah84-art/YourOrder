@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using yourOrder.Core.Entity.BasketAggregate;
 using yourOrder.Core.Entity.OrderAggregate;
@@ -31,7 +32,8 @@ namespace yourOrder.Services
         public async Task<CustomerBasket?> CreateOrUpdatePaymentIntent(string basketId)
         {
             StripeConfiguration.ApiKey = _stripe.SecretKey;
-            var basket = await _cachingService.GetCachedResponseAsync<CustomerBasket>(basketId);
+            var Jsonbasket = await _cachingService.GetCachedResponseAsync(basketId);
+            var basket = JsonSerializer.Deserialize<CustomerBasket>(Jsonbasket!);
             if (basket == null) return null;
 
             decimal subtotal = basket.Items.Sum(item => item.Price * item.Quantity);

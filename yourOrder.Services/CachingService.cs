@@ -29,24 +29,13 @@ namespace yourOrder.Services
 
 
 
-        public async Task<T?> GetCachedResponseAsync<T>(string cacheKey)
+        public async Task<string?> GetCachedResponseAsync(string cacheKey)
         {
             if (string.IsNullOrWhiteSpace(cacheKey))
                 throw new ArgumentException("Cache key cannot be null or empty.", nameof(cacheKey));
 
             var cachedData = await _database.StringGetAsync(cacheKey);
-            if (cachedData.IsNullOrEmpty)
-                return default;
-
-            try
-            {
-                return JsonSerializer.Deserialize<T>(cachedData!, _jsonOptions);
-            }
-            catch
-            {
-                await _database.KeyDeleteAsync(cacheKey);
-                return default;
-            }
+            return (cachedData.IsNullOrEmpty) ? default : cachedData;
         }
 
         public async Task<bool> SetCacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)

@@ -8,7 +8,7 @@ namespace yourOrder.Core.Interfaces
 {
     public interface ICachingService
     {
-        Task<T?> GetCachedResponseAsync<T>(string cacheKey);
+        Task<string?> GetCachedResponseAsync(string cacheKey);
         Task<bool> SetCacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive);
         Task<bool> RemoveCacheAsync(string cacheKey);
         Task<bool> ExistsAsync(string cacheKey);
