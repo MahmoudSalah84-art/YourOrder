@@ -28,13 +28,29 @@ namespace yourOrder.APIs.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ICachingService, CachingService>();
 
+            // add health checks
+            var defaultConnection = Configuration.GetConnectionString("DefaultConnection");
+            var identityConnection = Configuration.GetConnectionString("IdentityConnection");
+            var redisConnection = Configuration.GetConnectionString("RedisConnection");
+            services.AddHealthChecks()
+                .AddSqlServer(defaultConnection!, name: "StoreDatabase")
+                .AddSqlServer(identityConnection!, name: "IdentityDatabase")
+                .AddRedis(redisConnection!, name: "RedisCache");
+
+            // add CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .WithOrigins("https://localhost:3000");
+                });
+            });
 
 
 
             //waiting
-            
-            
-            
             //services.Configure<ApiBehaviorOptions>(options =>
             //{
             //    options.InvalidModelStateResponseFactory = actionContext =>

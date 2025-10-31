@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
-//using NETCore.MailKit.Core;
 using StackExchange.Redis;
 using System;
 using System.Text;
+using yourOrder.APIs.Errors;
 using yourOrder.APIs.Extensions;
 using yourOrder.APIs.Helpers;
 using yourOrder.APIs.Middleware;
@@ -39,12 +42,35 @@ namespace yourOrder.APIs
                 return ConnectionMultiplexer.Connect(connection);
             });
 
+
+            // handeling all error from model state to uniform error
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .SelectMany(e => e.Value.Errors)
+                        .Select(e => e.ErrorMessage).ToArray();
+                    var errorResponse = new ApiValidationErrorResponse {Errors = errors};
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
+
+            
+
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddIdentityServices(builder.Configuration);
             #endregion
 
+
+
+
             var app = builder.Build();
+
+
+
 
             #region Configure the HTTP request pipeline.
             //Seeding Data
@@ -54,7 +80,6 @@ namespace yourOrder.APIs
             try
             {
                 var context = services.GetRequiredService<AppDbContext>(); //create instance from appdbcontext and add required for throw exeption if null not just null (connect to database)
-                await context.Database.MigrateAsync(); // Apply pending migrations
                 await AppDbContextSeed.SeedAsync(context, loggerFactory); // Seed the data
                 var userManager = services.GetRequiredService<UserManager<AppUser>>(); //create instance from usermanager and add required for throw exeption if null not just null (connect to database)
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>(); //create instance from rolemanager and add required for throw exeption if null not just null (connect to database)
@@ -66,6 +91,14 @@ namespace yourOrder.APIs
                 logger.LogError(ex, "An error occurred during migration");
             }
             // End Seeding Data
+
+            // for check if database is healthy
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
             app.UseMiddleware<ExceptionMiddleware>(); // for only exceptions 500
             app.UseStatusCodePagesWithReExecute("/errors/{0}");// for other status code like 404,...
             app.UseStaticFiles(); //for images
